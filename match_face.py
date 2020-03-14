@@ -5,6 +5,8 @@ from os import path
 import sys
 from pathlib import Path, PureWindowsPath
 
+# Usage: py match_face.py data_src\aligned\00000_0.jpg etc.
+
 # Set up commmand line args
 file_to_recognize = sys.argv[1]
 target_dir = os.getcwd()
@@ -43,8 +45,9 @@ if not path.isdir(match_path):
 
 
 # Create an encoding of my facial features that can be compared to other faces
-picture_of_me = face_recognition.load_image_file(file_to_recognize)
-my_face_encoding = face_recognition.face_encodings(picture_of_me)[0]
+if os.path.isfile(file_to_recognize):
+    picture_of_me = face_recognition.load_image_file(file_to_recognize)
+    my_face_encoding = face_recognition.face_encodings(picture_of_me)[0]
 
 # Iterate through all the 10,460 pictures
 for thisFile in os.listdir(target_dir):
@@ -66,5 +69,6 @@ for thisFile in os.listdir(target_dir):
             # Save the image to a seperate folder if there is a match
             if results[0] == True:
                 match_file = os.path.join(match_path, thisFile)
-                move(
-                    file_name, match_file)
+                if os.path.isfile(file_name):
+                    move(
+                        file_name, match_file)
